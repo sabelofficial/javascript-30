@@ -1,2 +1,2 @@
 # javascript-30
-A 30 day Vanilla JS challenge by Wesbos.  
+## Check out the course [here](https://www.javascript30.com)
