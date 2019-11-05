@@ -103,8 +103,10 @@
     let inBetween = false;
     if(e.shiftKey && e.target.checked) { //check if shift-Key is down AND the input is being CHECKED
       checkboxes.forEach(cb => {
-        if(cb === e.target || cb == lastChecked) {
+        if(cb === e.target || cb == lastChecked) { //allows multiple checking BOTH ways (top-to-bottom, bottom-to-top)
           inBetween = !inBetween; 
+          //e.target -> true, lastChecked -> false
+          //lastChecked -> true, e.target -> false
         }
         if(inBetween) {
           cb.checked = true;
