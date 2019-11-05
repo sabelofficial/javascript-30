@@ -26,12 +26,16 @@
     const numberWithCommas = (num) => { //from stackoverflow (https://bit.ly/2NHdPCs)
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-    
-    const showSuggestions = ({ target }) => {
-      const matches = cities.filter(location => {
-        const regex = new RegExp(target.value, 'gi'); // 'g' -> global (all matches), 'i' -> case-insensitive
+
+    const getMatches = (term, cities) => {
+      return cities.filter(location => {
+        const regex = new RegExp(term, 'gi'); // 'g' -> global (all matches), 'i' -> case-insensitive
         return (location.city.match(regex) || location.state.match(regex));
       });
+    }
+    
+    const showSuggestions = ({ target }) => {
+      const matches = getMatches(target.value, cities);
 
       const listHTML = matches.map(location => {
         const regex = new RegExp(target.value, 'gi'); //get matches from each location string and highlight them
