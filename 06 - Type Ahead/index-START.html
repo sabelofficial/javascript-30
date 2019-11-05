@@ -39,13 +39,12 @@
 
       const listHTML = matches.map(location => {
         const regex = new RegExp(target.value, 'gi'); //get matches from each location string and highlight them
-        console.log(regex)
         const city = location.city.replace(regex, `<span class="hl">${ target.value }</span>`);
         const state = location.state.replace(regex, `<span class="hl">${ target.value }</span>`);
 
         return (
           `<li>
-            <span class="name">${city}, ${state}<span>
+            <span class="name">${city}, ${state}</span>
             <span class="population">${numberWithCommas(location.population)}</span>
           </li>`
         );
