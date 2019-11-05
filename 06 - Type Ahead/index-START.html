@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+
+  <script>
+    const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+    const cities = [];
+    fetch(endpoint)
+      .then(res => res.json()) //transforms data to JSON (returns a promise)
+      .then(data => cities.push(...data)) //copies the data (type: array) to the cities array
+
+    const numberWithCommas = (num) => { //from stackoverflow (https://bit.ly/2NHdPCs)
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    
+    const showSuggestions = ({ target }) => {
+      const matches = cities.filter(location => {
+        const regex = new RegExp(target.value, 'gi'); // 'g' -> global (all matches), 'i' -> case-insensitive
+        return (location.city.match(regex) || location.state.match(regex));
+      });
+
+      const listHTML = matches.map(location => {
+        const regex = new RegExp(target.value, 'gi'); //get matches from each location string and highlight them
+        console.log(regex)
+        const city = location.city.replace(regex, `<span class="hl">${ target.value }</span>`);
+        const state = location.state.replace(regex, `<span class="hl">${ target.value }</span>`);
+
+        return (
+          `<li>
+            <span class="name">${city}, ${state}<span>
+            <span class="population">${numberWithCommas(location.population)}</span>
+          </li>`
+        );
+      }).join('');
+      suggestions.innerHTML = listHTML;
+    }
+
+    const input = document.querySelector('.search');
+    const suggestions = document.querySelector('.suggestions');
+
+    input.addEventListener('change', showSuggestions);
+    input.addEventListener('keyup', showSuggestions);
+  </script>
+</body>
+</html>
