@@ -6,6 +6,7 @@ const progressBar = player.querySelector('.progress__filled');
 const toggleButton = player.querySelector('.toggle'); // play/pause button
 const sliders = player.querySelectorAll('.player__slider');
 const skipButtons = player.querySelectorAll('button[data-skip]');
+const fullscreen = player.querySelector('.fullscreen');
 
 const toggleVideo = () => {
     video.paused ? video.play() : video.pause();
@@ -32,6 +33,33 @@ const updateTime = e => {
 const updateProgressBar = () => {
     const percent = (video.currentTime / video.duration) * 100;
     progressBar.style.flexBasis = `${percent}%`;
+}
+
+const enterFullscreen = () => {
+    if (video.requestFullscreen) {
+        video.requestFullscreen();
+    } else if (video.mozRequestFullScreen) { //Firefox
+        video.mozRequestFullScreen();
+    } else if (video.webkitRequestFullscreen) { //Chrome, Safari
+        video.webkitRequestFullscreen();
+    } else if (video.msRequestFullscreen) { //Edge, IE
+        video.msRequestFullscreen();
+    }
+}
+
+const ESC_KEYCODE = 27;
+const exitFullscreen = (e) => {
+    if(e.keyCode === ESC_KEYCODE) {
+        if (video.exitFullscreen) {
+            video.exitFullscreen();
+        } else if (video.mozCancelFullScreen) { 
+            video.mozCancelFullScreen();
+        } else if (video.webkitExitFullscreen) { 
+            video.webkitExitFullscreen();
+        } else if (video.msExitFullscreen) { 
+            video.msExitFullscreen();
+        }
+    }
 }
 
 //event listeners
@@ -62,3 +90,7 @@ progress.addEventListener('mousemove', (e) => mouseDown && updateTime(e));
 
 //progress bar
 video.addEventListener('timeupdate', updateProgressBar);
+
+//fullscreen
+fullscreen.addEventListener('click', enterFullscreen);
+window.addEventListener('keydown', exitFullscreen) //use ESC key to exit fullscreen
