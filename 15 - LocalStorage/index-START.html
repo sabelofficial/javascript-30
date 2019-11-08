@@ -23,12 +23,20 @@
       <input type="text" name="item" placeholder="Item Name" autocomplete="off" required>
       <input type="submit" value="+ Add Item">
     </form>
+    <div class="buttons-list">
+      <button class="delete_all">Delete All</button>
+      <button class="check_all">Check All</button>
+      <button class="uncheck_all">Uncheck All</button>
+    </div>
   </div>
 
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
   const items = JSON.parse(localStorage.getItem('items')) || [];
+  const deleteBtn = document.querySelector('.delete_all');
+  const checkBtn = document.querySelector('.check_all');
+  const uncheckBtn = document.querySelector('.uncheck_all');
 
   const addItem = e => {
     e.preventDefault();
@@ -53,7 +61,7 @@
     platesList.innerHTML = plates.map((plate, i) => {
       return `
         <li>
-          <input type="checkbox" data-index="${i}" id="item${i}" ${plate.done ? 'checked' : ''} />
+          <input type="checkbox" data-index="${i}" id="item${i}" ${plate.checked ? 'checked' : ''} />
           <label for="item${i}">${plate.text}</label>
         </li>
       `;
@@ -64,12 +72,27 @@
     if(!e.target.matches('input')) return;
 
     const index = e.target.dataset.index;
-    items[index].done = !items[index].done;
+    items[index].checked = !items[index].checked;
     localStorage.setItem('items', JSON.stringify(items));
+  }
+
+  const deleteAll = () => {
+    items.splice(0, items.length);
+    localStorage.setItem('items', '[]');
+    populateList(items, itemsList);
+  }
+
+  const toggleChecks = (val) => {
+    items.forEach(item => item.checked = val);
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
   }
 
   addItems.addEventListener('submit', addItem);
   itemsList.addEventListener('click', toggleDone);
+  deleteBtn.addEventListener('click', deleteAll);
+  checkBtn.addEventListener('click', () => toggleChecks(true));
+  uncheckBtn.addEventListener('click', () => toggleChecks(false));
 
   populateList(items, itemsList);
 </script>
