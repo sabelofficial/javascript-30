@@ -39,6 +39,7 @@
   const moles = document.querySelectorAll('.mole');
   const timerDisplay = document.querySelector('.timer');
   let lastHole;
+  let lastMole;
   let timeUp = false;
   let score = 0;
   let countdown;
@@ -109,9 +110,11 @@
 
   const bonk = e => {
     if(!e.isTrusted) return; //fake click
-    score++;
+    if(e.target !== lastMole) score++;
+
     e.target.classList.remove('up');
     scoreBoard.textContent = score;
+    lastMole = e.target;
   }
 
   moles.forEach(mole => mole.addEventListener('click', bonk));
