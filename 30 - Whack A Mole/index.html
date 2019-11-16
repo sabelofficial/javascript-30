@@ -9,6 +9,7 @@
 <body>
 
   <h1>Whack-a-mole! <span class="score">0</span></h1>
+  <div class="timer">00:00</div>
   <button onClick="startGame()">Start!</button>
 
   <div class="game">
@@ -36,16 +37,19 @@
   const holes = document.querySelectorAll('.hole');
   const scoreBoard = document.querySelector('.score');
   const moles = document.querySelectorAll('.mole');
+  const timerDisplay = document.querySelector('.timer');
   let lastHole;
   let timeUp = false;
   let score = 0;
+  let countdown;
 
   const randTime = (min, max) => { // [min, max)
     return Math.round(Math.random() * (max - min) + min);
   }
 
+  //select random hole
   const randHole = (holes) => {
-    const index = Math.floor(Math.random * holes.length);
+    const index = Math.floor(Math.random() * holes.length);
     const hole = holes[index];
 
     if(hole === lastHole) { //prevent the hole from being selected in succession
@@ -67,12 +71,40 @@
     }, time);
   }
 
+  const displayTimeLeft = seconds => {
+    const minutes = Math.floor(seconds / 60); 
+    const secondsLeft = seconds % 60;
+    
+    const display = `${minutes}:${secondsLeft < 10 ? '0' : '' }${secondsLeft}`;
+    timerDisplay.textContent = display;
+  }
+
+  const timer = seconds => {
+    //clear any existing timers
+    clearInterval(countdown);
+    displayTimeLeft(seconds);
+
+    seconds--;
+    countdown = setInterval(() => {
+        const secondsLeft = seconds--;
+        //stop timer  when it reaches zero
+        if(secondsLeft < 0) {
+            clearInterval(countdown);
+            return;
+        }
+        //display
+        displayTimeLeft(secondsLeft);
+    }, 1000);
+  }
+
   const startGame = () => {
+    const seconds = 10;
     scoreBoard.textContent = 0;
     timeUp = false;
     score = 0;
+    timer(seconds);
     peep();
-    setTimeout(() => timeUp = true, 10000);
+    setTimeout(() => timeUp = true, seconds*1000);
   }
 
   const bonk = e => {
